@@ -124,10 +124,21 @@ char	*get_next_line(int fd)
 		if (read_sym == 0)
 			break;
 		ost = ft_strjoin(ost, buff);
+		if (ost == 0)
+		{
+			free(buff);
+			return (NULL);
+		}
 	}
 	if (is_has_linebreak(ost))
 	{
 		line = trim_linebreak(ost);
+		if (line == 0)
+		{
+			free(ost);
+			free(buff);
+			return (NULL);
+		}
 		if (*ost == '\0')
 		{
 			free(ost);
