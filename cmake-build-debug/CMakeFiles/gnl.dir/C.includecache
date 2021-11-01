@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/rsenelle/CLionProjects/gnl/main.c
+unistd.h
+-
+fcntl.h
+-
+stdio.h
+-
+stdlib.h
+-
+

@@ -40,10 +40,9 @@ char	*trim_linebreak(char *str)
 	return (line);
 }
 
-char	*read_cycle(char *ost, int fd)
+char	*read_cycle(char *ost, int fd, int read_sym)
 {
 	char	*buff;
-	int		read_sym;
 
 	buff = malloc(BUFFER_SIZE + 1);
 	if (!buff)
@@ -58,7 +57,7 @@ char	*read_cycle(char *ost, int fd)
 			return (NULL);
 		}
 		if (read_sym == 0)
-			return (0);
+			break ;
 		ost = ft_strjoin(ost, buff);
 		if (ost == 0)
 		{
@@ -70,12 +69,18 @@ char	*read_cycle(char *ost, int fd)
 	return (ost);
 }
 
+void	free_ost(char **ost)
+{
+	free(*ost);
+	*ost = 0;
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*ost = 0;
 	char		*line;
 
-	ost = read_cycle(ost, fd);
+	ost = read_cycle(ost, fd, 0);
 	if (!ost)
 		return (0);
 	if (is_has_linebreak(ost))
@@ -87,10 +92,7 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 		if (*ost == '\0')
-		{
-			free(ost);
-			ost = 0;
-		}
+			free_ost(&ost);
 	}
 	else
 	{
@@ -99,40 +101,3 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
-
-//int main()
-//{
-//	int fd = open("/Users/rsenelle/CLionProjects/gnl/gnlTester/files/nl", O_RDONLY);
-//	printf("%s",get_next_line(fd));
-//	printf("----------");
-//	printf("%s",get_next_line(fd));
-//	printf("----------");
-//	printf("%s",get_next_line(fd));
-//	printf("----------");
-//	printf("%s",get_next_line(fd));
-//}
-
-//int main(void)
-//{
-//    char *line;
-//    int fd = open("../file.txt", O_RDONLY);
-//    if (fd < 0)
-//        return (1);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    line = get_next_line(fd);
-//    printf("%s\n", line);
-//    return (0);
-//}

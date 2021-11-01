@@ -34,17 +34,17 @@ char	*ft_strjoin(char *s1, char *s2)
 {
 	char			*dest;
 	unsigned int	i;
-	char *s;
+	char			*s;
 
 	s = s1;
 	i = 0;
-	if (s1 == 0 && s2 ==0)
+	if (s1 == 0 && s2 == 0)
 		return (0);
 	if (s1 == 0)
-		return ft_strdup(s2);
+		return (ft_strdup(s2));
 	if (s2 == 0)
-		return ft_strdup(s1);
-	dest = (char*)malloc(sizeof(*dest) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+		return (ft_strdup(s1));
+	dest = (char *)malloc(sizeof(*dest) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (dest == 0)
 		return (0);
 	while (*s1 != '\0')
