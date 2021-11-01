@@ -1,68 +1,8 @@
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "get_next_line.h"
 
-//#define BUFFER_SIZE 1
-size_t	ft_strlen(const char *s)
+int	is_has_linebreak(char *str)
 {
-	size_t	k;
-
-	k = 0;
-	while (s[k])
-		k++;
-	return (k);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*d;
-	int		i;
-
-	if (!s1)
-		return (0);
-	d = malloc(sizeof(char) * (ft_strlen(s1) + 1));
-	i = 0;
-	if (!d)
-		return (0);
-	while (s1[i])
-	{
-		d[i] = s1[i];
-		i++;
-	}
-	d[i] = '\0';
-	return (d);
-}
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char			*dest;
-	unsigned int	i;
-	char *s;
-
-	s = s1;
-	i = 0;
-	if (s1 == 0 && s2 ==0)
-		return (0);
-	if (s1 == 0)
-		return ft_strdup(s2);
-	if (s2 == 0)
-		return ft_strdup(s1);
-	dest = (char*)malloc(sizeof(*dest) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (dest == 0)
-		return (0);
-	while (*s1 != '\0')
-		dest[i++] = *s1++;
-	while (*s2 != '\0')
-		dest[i++] = *s2++;
-	dest[i] = '\0';
-	free(s);
-	return (dest);
-}
-
-int is_has_linebreak(char *str)
-{
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str)
@@ -76,38 +16,34 @@ int is_has_linebreak(char *str)
 	return (0);
 }
 
-
-
 char	*trim_linebreak(char *str)
 {
-	int i;
-	char *xyi;
-	int j;
+	int		i;
+	char	*line;
+	int		j;
 
 	i = 0;
-	xyi = ft_strdup(str); //TODO Protection
+	line = ft_strdup(str);
+	if (line == 0)
+		return (NULL);
 	while (str[i] != '\n')
 		i++;
 	i++;
-	xyi[i] = '\0';
+	line[i] = '\0';
 	j = 0;
 	while (str[i + j])
 	{
-		str[j] = str[i+j];
+		str[j] = str[i + j];
 		j++;
 	}
 	str[j] = '\0';
-	return xyi;
+	return (line);
 }
 
-
-
-char	*get_next_line(int fd)
+char	*read_cycle(char *ost, int fd)
 {
-	int      read_sym;
-	static char *ost = 0;
-	char        *line;
-	char        *buff;
+	char	*buff;
+	int		read_sym;
 
 	buff = malloc(BUFFER_SIZE + 1);
 	if (!buff)
@@ -122,7 +58,7 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 		if (read_sym == 0)
-			break;
+			return (0);
 		ost = ft_strjoin(ost, buff);
 		if (ost == 0)
 		{
@@ -130,13 +66,24 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 	}
+	free(buff);
+	return (ost);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*ost = 0;
+	char		*line;
+
+	ost = read_cycle(ost, fd);
+	if (!ost)
+		return (0);
 	if (is_has_linebreak(ost))
 	{
 		line = trim_linebreak(ost);
 		if (line == 0)
 		{
 			free(ost);
-			free(buff);
 			return (NULL);
 		}
 		if (*ost == '\0')
@@ -150,7 +97,6 @@ char	*get_next_line(int fd)
 		line = ost;
 		ost = 0;
 	}
-	free(buff);
 	return (line);
 }
 
