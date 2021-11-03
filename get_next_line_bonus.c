@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rsenelle <rsenelle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 15:48:42 by rsenelle          #+#    #+#             */
-/*   Updated: 2021/11/03 14:10:58 by rsenelle         ###   ########.fr       */
+/*   Updated: 2021/11/03 14:15:05 by rsenelle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,29 +81,29 @@ void	free_ost(char **ost)
 
 char	*get_next_line(int fd)
 {
-	static char	*ost = 0;
+	static char	*ost[1024];
 	char		*line;
 
 	if (fd < 0 || fd > 1024)
 		return (NULL);
-	ost = read_cycle(ost, fd, 0);
-	if (!ost)
+	ost[fd] = read_cycle(ost[fd], fd, 0);
+	if (!ost[fd])
 		return (0);
-	if (is_has_linebreak(ost))
+	if (is_has_linebreak(ost[fd]))
 	{
-		line = trim_linebreak(ost);
+		line = trim_linebreak(ost[fd]);
 		if (line == 0)
 		{
-			free(ost);
+			free(ost[fd]);
 			return (NULL);
 		}
-		if (*ost == '\0')
-			free_ost(&ost);
+		if (*ost[fd] == '\0')
+			free_ost(&ost[fd]);
 	}
 	else
 	{
-		line = ost;
-		ost = 0;
+		line = ost[fd];
+		ost[fd] = 0;
 	}
 	return (line);
 }
